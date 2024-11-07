@@ -39,7 +39,7 @@ const AuthScreen = ({ navigation }) => {
     >
       <View style={styles.container}>
         {/* Title/Heading */}
-        <Text style={styles.appTitle}>Welcome To Well Nest</Text>
+        <Text style={styles.appTitle}>Welcome To       Well Nest</Text>
         <Text style={styles.subtitle}>Mental Health Counselling App</Text>
         
         <Text style={styles.title}>Sign In</Text>

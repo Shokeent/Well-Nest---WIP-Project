@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   timeSlotContainer: {
-    marginBottom: 30, // Additional space between Time Slot and Session Type
+    marginBottom: 30,
   },
   label: {
     fontSize: 16,

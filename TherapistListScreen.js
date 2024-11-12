@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // For navigation
-import { db } from './firebaseConfig'; // Import your Firestore config
-import { colors } from './colors'; // Import color values
+import { useNavigation } from '@react-navigation/native'; 
+import { db } from './firebaseConfig';
+import { colors } from './colors';
 
 const TherapistListScreen = () => {
   const [therapists, setTherapists] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
-  const [filteredTherapists, setFilteredTherapists] = useState([]); // State for filtered list
-  const navigation = useNavigation(); // Use navigation hook
+  const [searchTerm, setSearchTerm] = useState(''); 
+  const [filteredTherapists, setFilteredTherapists] = useState([]); 
+  const navigation = useNavigation(); 
 
   useEffect(() => {
     const unsubscribe = db.collection('therapists').onSnapshot((snapshot) => {
@@ -17,20 +17,17 @@ const TherapistListScreen = () => {
         ...doc.data(),
       }));
       setTherapists(therapistsData);
-      setFilteredTherapists(therapistsData); // Initially show all therapists
+      setFilteredTherapists(therapistsData);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
-  // Handle search term change
   const handleSearch = (term) => {
     setSearchTerm(term);
     if (term === '') {
-      setFilteredTherapists(therapists); // Show all therapists if search is cleared
+      setFilteredTherapists(therapists); 
     } else {
-      // Filter therapists by name (case insensitive)
       const filtered = therapists.filter((therapist) =>
         therapist.name.toLowerCase().includes(term.toLowerCase())
       );
@@ -40,74 +37,79 @@ const TherapistListScreen = () => {
 
   return (
     <ImageBackground
-      source={require('./assets/background.jpg')} // Replace with your background image URL or local path
-      style={styles.container}
+      source={require('./assets/background.jpg')}
+      style={styles.background}
       resizeMode="cover"
     >
-      {/* Search bar */}
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search by name"
-        value={searchTerm}
-        onChangeText={handleSearch}
-      />
-
-      {/* Therapist list */}
-      <FlatList
-        data={filteredTherapists}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => navigation.navigate('Profile', { therapistId: item.id })} // Navigate to ProfileScreen
-          >
-            {/* Only display name and specialization */}
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.specialty}>{item.specialization}</Text>
-            {/* Display rating */}
-            <Text style={styles.rating}>Rating: {item.rating ? item.rating.toFixed(1) : 'No rating yet'}</Text>
-          </TouchableOpacity>
-        )}
-      />
+      <View style={styles.overlay}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search by name"
+          placeholderTextColor="#A5D6A7"
+          value={searchTerm}
+          onChangeText={handleSearch}
+        />
+        <FlatList
+          data={filteredTherapists}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => navigation.navigate('Profile', { therapistId: item.id })} 
+            >
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.specialty}>{item.specialization}</Text>
+              <Text style={styles.rating}>Rating: {item.rating ? item.rating.toFixed(1) : 'No rating yet'}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     padding: 16,
-    backgroundColor: colors.background, // Fallback color in case the image fails
   },
   searchBar: {
-    height: 40,
-    borderColor: '#ccc',
+    height: 50,
+    borderColor: '#A5D6A7',
     borderWidth: 1,
     borderRadius: 8,
-    paddingLeft: 8,
+    paddingLeft: 16,
     marginBottom: 16,
-    backgroundColor: colors.background, // Background for search bar to make it readable
+    backgroundColor: '#FFFFFF',
+    color: '#388E3C',
+    fontSize: 16,
   },
   card: {
     padding: 16,
     marginBottom: 12,
-    backgroundColor: colors.accent, // Soft green background for each card
-    borderRadius: 8,
+    backgroundColor: '#E8F5E9',
+    borderRadius: 10,
     elevation: 2,
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.primary, // Dark green for therapist's name
+    color: '#4CAF50',
   },
   specialty: {
     fontSize: 16,
-    color: colors.text, // Dark text for the specialization
+    color: '#388E3C',
+    marginTop: 4,
   },
   rating: {
     fontSize: 14,
-    color: colors.primary, // Greenish color for the rating
+    color: '#81C784',
     marginTop: 8,
+    
   },
 });
 

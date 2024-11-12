@@ -1,8 +1,7 @@
-// AuthScreen.js
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
-import { auth } from './firebaseConfig'; // Ensure this points to your firebase configuration file
-import { colors } from './colors'; // Ensure this points to your colors file
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { auth } from './firebaseConfig'; 
+import { colors } from './colors';
 
 const AuthScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -12,7 +11,7 @@ const AuthScreen = ({ navigation }) => {
   const handleSignIn = async () => {
     try {
       await auth.signInWithEmailAndPassword(email, password);
-      navigation.navigate('Home'); // Navigate to home after successful sign-in
+      navigation.navigate('AppTabs'); // Navigate to the main app tabs after successful sign-in
     } catch (error) {
       let customErrorMessage = "";
       switch (error.code) {
@@ -34,40 +33,42 @@ const AuthScreen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require('./assets/background.jpg')} // You can replace with your own background image
+      source={require('./assets/background.jpg')} 
       style={styles.background}
+      resizeMode="cover"
     >
-      <View style={styles.container}>
-        {/* Title/Heading */}
-        <Text style={styles.appTitle}>Welcome To       Well Nest</Text>
+      <View style={styles.overlay}>
+        <Text style={styles.appTitle}>Welcome to              Well Nest</Text>
         <Text style={styles.subtitle}>Mental Health Counselling App</Text>
         
-        <Text style={styles.title}>Sign In</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
-        
-        <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-          <Text style={styles.buttonText}>Sign In</Text>
-        </TouchableOpacity>
-
-        {/* Sign Up navigation link */}
-        <Text style={styles.link} onPress={() => navigation.navigate('Sign Up')}>
-          Don't have an account? Sign Up
-        </Text>
+        <View style={styles.form}>
+          <Text style={styles.title}>Sign In</Text>
+          
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+          
+          <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+            <Text style={styles.buttonText}>Sign In</Text>
+          </TouchableOpacity>
+          
+          <Text style={styles.link} onPress={() => navigation.navigate('Sign Up')}>
+            Don't have an account? Sign Up
+          </Text>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -76,61 +77,64 @@ const AuthScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: 'up',
-    padding: 1,
-   
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Slight transparency with white background to help green pop
-    borderRadius: 10,
+  },
+  overlay: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    padding: 20,
   },
   appTitle: {
-    fontSize: 40,
+    fontSize: 34,
     fontWeight: 'bold',
-    color: '#4CAF50', // Healing green color for the title
-    marginBottom: 10,
+    color: '#4CAF50', 
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
-    color: '#81C784', // A lighter shade of green for the subtitle
+    color: '#81C784', 
     marginBottom: 30,
     textAlign: 'center',
     fontStyle: 'italic',
   },
+  form: {
+    width: '100%',
+    alignItems: 'center',
+  },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 24,
-    color: '#388E3C', // Slightly darker shade of green for the sign-in title
+    color: '#388E3C',
+    marginBottom: 20,
     textAlign: 'center',
   },
   input: {
-    height: 50,
     width: '100%',
-    borderColor: '#A5D6A7', // Lighter green border for inputs
+    height: 50,
+    borderColor: '#A5D6A7',
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
-    borderRadius: 10,
+    borderRadius: 8,
     fontSize: 16,
-    backgroundColor: '#fff', // Light green background for inputs
+    backgroundColor: '#fff',
   },
   error: {
-    color: '#D32F2F', // Error text in red to stand out
+    color: '#D32F2F',
     marginBottom: 12,
+    textAlign: 'center',
   },
   button: {
     width: '100%',
-    backgroundColor: '#4CAF50', // Main healing green color for the button
+    backgroundColor: '#4CAF50',
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 8,
     marginBottom: 15,
   },
   buttonText: {
@@ -139,10 +143,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   link: {
-    marginTop: 12,
-    color: '#4CAF50', // Green color for the link
+    color: '#4CAF50',
     textDecorationLine: 'underline',
     fontSize: 16,
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
 

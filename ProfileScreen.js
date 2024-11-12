@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet, ImageBackground } from 'react-native';
-import { db } from './firebaseConfig'; // Import Firebase config
-import { colors } from './colors'; // Import colors file
+import { db } from './firebaseConfig'; 
+import { colors } from './colors'; 
 
 const ProfileScreen = ({ route, navigation }) => {
   const { therapistId } = route.params;
@@ -30,30 +30,18 @@ const ProfileScreen = ({ route, navigation }) => {
 
   return (
     <ImageBackground
-      source={require('./assets/background.jpg')} // Replace with your background image URL or local path
+      source={require('./assets/background.jpg')} 
       style={styles.container}
       resizeMode="cover"
     >
       <View style={styles.profileContainer}>
-        {/* Therapist Name */}
         <Text style={styles.name}>{therapist.name}</Text>
-
-        {/* Specialization */}
         <Text style={styles.specialization}>{therapist.specialization}</Text>
-
-        {/* Rating */}
         <Text style={styles.rating}>Rating: {therapist.rating}</Text>
-
-        {/* Location */}
         <Text style={styles.location}>Location: {therapist.location}</Text>
-
-        {/* Bio */}
         <Text style={styles.bio}>{therapist.bio || 'No bio available.'}</Text>
-
-        {/* Availability */}
         <Text style={styles.availability}>Availability: {therapist.availability}</Text>
 
-        {/* Booking Button */}
         <Button
           title="Book Now"
           onPress={() => navigation.navigate('Booking', { therapistId })}
@@ -73,8 +61,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background, // Background color for readability
-    opacity: 0.9, // Slight transparency to allow the background image to show through
+    backgroundColor: colors.background, 
+    opacity: 0.9, 
     borderRadius: 10, // Optional: adds a slight curve to the container edges
     padding: 20,
   },

@@ -1,8 +1,7 @@
-// SignupScreen.js
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
-import { auth } from './firebaseConfig'; // Ensure this points to your firebase configuration file
-import { colors } from './colors'; // Ensure this points to your colors file
+import { auth } from './firebaseConfig'; 
+import { colors } from './colors';
 
 const SignupScreen = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -19,9 +18,8 @@ const SignupScreen = ({ navigation }) => {
     }
 
     try {
-      await auth.createUserWithEmailAndPassword(email, password);
-      // Optionally, save the user's name and phone number to your database here
-      navigation.navigate('Well Nest'); // Navigate back to Auth screen after successful sign-up
+      await auth.createUserWithEmailAndPassword(email, password); 
+      navigation.navigate('Well Nest'); 
     } catch (error) {
       setErrorMessage(error.message);
     }

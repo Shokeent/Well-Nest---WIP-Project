@@ -6,7 +6,7 @@ const MapScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Therapist Locations</Text>
-      {/* Implement Google Maps here */}
+      {/*Maps Implementation */}
     </View>
   );
 };

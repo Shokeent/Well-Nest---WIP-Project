@@ -10,7 +10,8 @@ import SignUpScreen from './SignupScreen';
 import AuthScreen from './AuthScreen';
 import TherapistListScreen from './TherapistListScreen';
 import BookingScreen from './BookingScreen';
-import ProfileScreen from './ProfileScreen';
+import TherapistDetailScreen from './TherapistDetailScreen';
+import UserProfileScreen from './UserProfileScreen';
 import MapScreen from './MapScreen';
 import FavoritesScreen from './FavoritesScreen';
 import HistoryScreen from './HistoryScreen';
@@ -22,7 +23,7 @@ const Tab = createBottomTabNavigator();
 const HomeStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Therapists" component={TherapistListScreen} />
-    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="TherapistDetail" component={TherapistDetailScreen} />
     <Stack.Screen name="Booking" component={BookingScreen} />
     <Stack.Screen name="Map" component={MapScreen} />
   </Stack.Navigator>
@@ -44,9 +45,9 @@ const AppTabs = () => (
       tabBarInactiveTintColor: 'gray',
     })}
   >
-    <Tab.Screen name="Home" component={HomeStack} />
+    <Tab.Screen name="Home" component={HomeStack} options={{ headerShown: false }} />
     <Tab.Screen name="Favorites" component={FavoritesScreen} />
-    <Tab.Screen name="Profile" component={ProfileScreen} />
+    <Tab.Screen name="Profile" component={UserProfileScreen} />
     <Tab.Screen name="History" component={HistoryScreen} />
   </Tab.Navigator>
 );
@@ -65,7 +66,7 @@ const App = () => {
         Alert.alert('Permission denied', 'Failed to get push token for push notifications!');
         return;
       }
-      
+
       token = (await Notifications.getExpoPushTokenAsync()).data;
       console.log('Push token:', token);
 
@@ -76,7 +77,6 @@ const App = () => {
         });
       }
     } else {
-      // Alert if not using a physical device
       // Alert.alert('Push Notifications', 'Must use a physical device for Push Notifications');
     }
 
@@ -98,7 +98,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Auth" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Auth" component={AuthScreen} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} />
+        <Stack.Screen name="Sign Up" component={SignUpScreen} />
         <Stack.Screen name="AppTabs" component={AppTabs} />
       </Stack.Navigator>
     </NavigationContainer>

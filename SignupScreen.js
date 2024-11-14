@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
-import { auth } from './firebaseConfig'; 
+import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
+import { auth, db } from './firebaseConfig'; // Ensure this points to your Firebase config file
 import { colors } from './colors';
 
 const SignupScreen = ({ navigation }) => {
@@ -18,9 +18,23 @@ const SignupScreen = ({ navigation }) => {
     }
 
     try {
-      await auth.createUserWithEmailAndPassword(email, password); 
-      navigation.navigate('Well Nest'); 
+      // Create a new user in Firebase Authentication
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+
+      // Create a user profile document in Firestore
+      await db.collection('users').doc(user.uid).set({
+        name: name,
+        email: email,
+        phone: phone,
+        createdAt: new Date(),
+      });
+
+      Alert.alert("Success", "Your account has been created!");
+      navigation.navigate('Auth'); // Redirect to login screen
+
     } catch (error) {
+      console.error("Error signing up: ", error);
       setErrorMessage(error.message);
     }
   };

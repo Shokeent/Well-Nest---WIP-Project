@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert } from 'react-native';
 import { auth } from './firebaseConfig'; 
 import { colors } from './colors';
 
@@ -28,6 +28,7 @@ const AuthScreen = ({ navigation }) => {
           customErrorMessage = "An unexpected error occurred. Please try again.";
       }
       setErrorMessage(customErrorMessage);
+      Alert.alert("Authentication Error", customErrorMessage);
     }
   };
 
@@ -38,7 +39,7 @@ const AuthScreen = ({ navigation }) => {
       resizeMode="cover"
     >
       <View style={styles.overlay}>
-        <Text style={styles.appTitle}>Welcome to              Well Nest</Text>
+        <Text style={styles.appTitle}>Welcome to Well Nest</Text>
         <Text style={styles.subtitle}>Mental Health Counselling App</Text>
         
         <View style={styles.form}>

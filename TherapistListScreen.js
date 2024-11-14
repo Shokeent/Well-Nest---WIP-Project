@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
-import { db } from './firebaseConfig';
+import { db, auth } from './firebaseConfig';
 import { colors } from './colors';
 
 const TherapistListScreen = () => {
@@ -55,7 +55,7 @@ const TherapistListScreen = () => {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.card}
-              onPress={() => navigation.navigate('Profile', { therapistId: item.id })} 
+              onPress={() => navigation.navigate('TherapistDetail', { therapistId: item.id })} 
             >
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.specialty}>{item.specialization}</Text>

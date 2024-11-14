@@ -1,52 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground, Alert } from 'react-native';
-import { auth, db } from './firebaseConfig';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { auth, db } from './firebaseConfig';
 import { colors } from './colors';
 
 const UserProfileScreen = ({ navigation }) => {
-  const [userDetails, setUserDetails] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    profileImage: null,
-  });
+  const [userData, setUserData] = useState({});
+  const [localImageUri, setLocalImageUri] = useState(null); // For storing the selected image URI
 
-  // Fetch user details from Firestore
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          const userDoc = await db.collection('users').doc(user.uid).get();
-          if (userDoc.exists) {
-            setUserDetails({
-              name: userDoc.data().name,
-              phone: userDoc.data().phone,
-              email: user.email, // Using auth email
-              profileImage: userDoc.data().profileImage || null,
-            });
-          }
-        } catch (error) {
-          console.error('Error fetching user details:', error);
-        }
+    const fetchUserData = async () => {
+      const userId = auth.currentUser?.uid;
+      if (userId) {
+        const userDoc = await db.collection('users').doc(userId).get();
+        setUserData(userDoc.data());
+        setLocalImageUri(userDoc.data()?.profileImage); // Load image URI from Firestore
       }
     };
-
-    fetchUserDetails();
+    fetchUserData();
   }, []);
-
-  const handleSignOut = () => {
-    auth.signOut()
-      .then(() => navigation.replace('Auth'))
-      .catch((error) => alert(error.message));
-  };
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
   
     if (!permissionResult.granted) {
-      Alert.alert("Permission required", "Please allow access to photos to upload a profile picture.");
+      Alert.alert("Permission required", "Please grant camera roll permissions to change the profile picture.");
       return;
     }
   
@@ -57,27 +35,37 @@ const UserProfileScreen = ({ navigation }) => {
       quality: 1,
     });
   
-    // Check if the result contains a URI before proceeding
-    if (!result.canceled && result.uri) {
-      const newProfileImage = result.uri;
-      setUserDetails(prevState => ({ ...prevState, profileImage: newProfileImage }));
-  
-      // Save the new profile image URI to Firestore only if it's not undefined
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          await db.collection('users').doc(user.uid).update({
-            profileImage: newProfileImage,
-          });
-        }
-      } catch (error) {
-        console.error('Error updating profile image:', error);
-      }
+    if (!result.cancelled && result.uri) {
+      setLocalImageUri(result.uri); // Update the local image URI immediately
+      saveImageUri(result.uri); // Save it to Firestore if URI is valid
     } else {
       console.log("Image selection was canceled or failed.");
     }
   };
   
+  const saveImageUri = async (uri) => {
+    try {
+      if (!uri) {
+        console.warn("No valid URI to save.");
+        return;
+      }
+  
+      const userId = auth.currentUser.uid;
+      await db.collection('users').doc(userId).update({
+        profileImage: uri, // Store the URI in Firestore
+      });
+      console.log('Image URI saved to Firestore successfully.');
+    } catch (error) {
+      console.error("Error updating profile image:", error);
+    }
+  };
+  
+
+  const handleSignOut = () => {
+    auth.signOut()
+      .then(() => navigation.replace('Auth'))
+      .catch((error) => alert(error.message));
+  };
 
   return (
     <ImageBackground
@@ -86,23 +74,20 @@ const UserProfileScreen = ({ navigation }) => {
       resizeMode="cover"
     >
       <View style={styles.overlay}>
-        {/* Profile Picture */}
-        <TouchableOpacity onPress={pickImage} style={styles.profilePictureContainer}>
-          {userDetails.profileImage ? (
-            <Image source={{ uri: userDetails.profileImage }} style={styles.profilePicture} />
+        <TouchableOpacity onPress={pickImage}>
+          {localImageUri ? (
+            <Image source={{ uri: localImageUri }} style={styles.profilePicture} />
           ) : (
             <View style={styles.profilePicturePlaceholder}>
               <Text style={styles.addPhotoText}>Add Photo</Text>
             </View>
           )}
         </TouchableOpacity>
+        
+        <Text style={styles.name}>{userData.name || "User Name"}</Text>
+        <Text style={styles.phone}>{userData.phone || "(123) 456-7890"}</Text>
+        <Text style={styles.email}>{userData.email || "user@example.com"}</Text>
 
-        {/* User Details */}
-        <Text style={styles.name}>{userDetails.name}</Text>
-        <Text style={styles.phone}>{userDetails.phone}</Text>
-        <Text style={styles.email}>{userDetails.email}</Text>
-
-        {/* Sign Out Button */}
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
           <Text style={styles.signOutButtonText}>Sign Out</Text>
         </TouchableOpacity>
@@ -120,34 +105,28 @@ const styles = StyleSheet.create({
   overlay: {
     width: '90%',
     height: '80%',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-evenly', 
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.85)',
     padding: 20,
     borderRadius: 10,
   },
-  profilePictureContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#D0F0C0',
+  profilePicture: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    overflow: 'hidden',
-  },
-  profilePicture: {
-    width: '100%',
-    height: '100%',
   },
   profilePicturePlaceholder: {
-    alignItems: 'center',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#D0F0C0',
     justifyContent: 'center',
-    width: '100%',
-    height: '100%',
+    alignItems: 'center',
   },
   addPhotoText: {
+    color: '#888',
     fontSize: 16,
-    color: colors.primary,
   },
   name: {
     fontSize: 24,

@@ -13,7 +13,15 @@ const TherapistDetailScreen = ({ route, navigation }) => {
       try {
         const doc = await db.collection('therapists').doc(therapistId).get();
         if (doc.exists) {
-          setTherapist(doc.data());
+          const data = doc.data();
+          
+          // Extract latitude and longitude if location exists
+          const location = data.location;
+          const formattedLocation = location
+            ? { latitude: location._lat, longitude: location._long }
+            : null;
+
+          setTherapist({ ...data, location: formattedLocation });
         } else {
           console.log('Therapist not found');
         }
@@ -29,12 +37,18 @@ const TherapistDetailScreen = ({ route, navigation }) => {
     const user = auth.currentUser;
     if (user) {
       try {
-        await db.collection('users').doc(user.uid).collection('favorites').doc(therapistId).set({
-          name: therapist.name,
-          specialization: therapist.specialization,
-          rating: therapist.rating,
-          location: therapist.location,
-        });
+        await db
+          .collection('users')
+          .doc(user.uid)
+          .collection('favorites')
+          .doc(therapistId)
+          .set({
+            name: therapist.name,
+            specialization: therapist.specialization,
+            rating: therapist.rating,
+            location: therapist.location, // Store location if needed
+            photoUrl: therapist.photoUrl || '',
+          });
         Alert.alert('Added to Favorites', `${therapist.name} has been added to your favorites.`);
       } catch (error) {
         console.error('Error adding to favorites:', error);
@@ -57,7 +71,11 @@ const TherapistDetailScreen = ({ route, navigation }) => {
   };
 
   const handleLocation = () => {
-    navigation.navigate('Map', { location: therapist.location });
+    if (therapist.location) {
+      navigation.navigate('Map', { location: therapist.location });
+    } else {
+      console.log("No location data available for this therapist.");
+    }
   };
 
   if (!therapist) {
@@ -72,11 +90,13 @@ const TherapistDetailScreen = ({ route, navigation }) => {
     >
       <View style={styles.overlay}>
         <Text style={styles.title}>Therapist Profile</Text>
-        <Text style={styles.name}> {therapist.name}</Text>
+        <Text style={styles.name}>{therapist.name}</Text>
         <Text style={styles.rating}>
           Rating: {therapist.rating} <Ionicons name="star" size={16} color="#FFD700" />
         </Text>
-        <Text style={styles.location}> {therapist.location}  </Text>
+        <Text style={styles.location}>
+          Location: {therapist.location ? `${therapist.location.latitude}, ${therapist.location.longitude}` : 'Not available'}
+        </Text>
 
         <Text style={styles.specialization}>Specializations:</Text>
         <Text style={styles.specializationText}>{therapist.specialization}</Text>

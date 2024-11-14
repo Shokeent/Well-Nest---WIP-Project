@@ -1,6 +1,6 @@
 // BookingScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, ImageBackground, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { db, auth } from './firebaseConfig';
 import { colors } from './colors';
@@ -12,7 +12,6 @@ const BookingScreen = ({ route, navigation }) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('Select a Time Slot');
   const [sessionType, setSessionType] = useState('In-Person');
-  const [isBookingSuccess, setIsBookingSuccess] = useState(false);
   const [timeModalVisible, setTimeModalVisible] = useState(false);
 
   useEffect(() => {
@@ -33,18 +32,17 @@ const BookingScreen = ({ route, navigation }) => {
 
   const handleBooking = async () => {
     if (!selectedDate || selectedTime === 'Select a Time Slot') {
-      alert('Please select a date and time slot.');
+      Alert.alert('Missing Information', 'Please select a date and time slot.');
       return;
     }
 
     try {
       const user = auth.currentUser;
       if (!user) {
-        alert('Please log in to book an appointment.');
+        Alert.alert('Authentication Error', 'Please log in to book an appointment.');
         return;
       }
 
-      // Define the appointment data
       const appointmentData = {
         therapistId,
         therapistName,
@@ -55,20 +53,26 @@ const BookingScreen = ({ route, navigation }) => {
         createdAt: new Date(),
       };
 
-      // Save the appointment to the user's subcollection in Firestore
       await db
         .collection('users')
         .doc(user.uid)
         .collection('appointments')
         .add(appointmentData);
 
-      setIsBookingSuccess(true);
-      setTimeout(() => {
-        navigation.navigate('Profile'); // Navigate to Profile or any other screen after booking
-      }, 2000);
+      // Show confirmation alert with appointment details
+      Alert.alert(
+        'Appointment Confirmed',
+        `Your appointment with ${therapistName} on ${selectedDate} at ${selectedTime} is confirmed.`,
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('History'),
+          },
+        ]
+      );
     } catch (error) {
       console.error('Error booking appointment: ', error);
-      alert('Failed to book appointment.');
+      Alert.alert('Error', 'Failed to book appointment. Please try again.');
     }
   };
 
@@ -96,11 +100,10 @@ const BookingScreen = ({ route, navigation }) => {
           <Text style={styles.selectorText}>{selectedTime}</Text>
         </TouchableOpacity>
 
+        {/* Booking Button */}
         <TouchableOpacity style={styles.button} onPress={handleBooking}>
           <Text style={styles.buttonText}>Book Appointment</Text>
         </TouchableOpacity>
-
-        {isBookingSuccess && <Text style={styles.successMessage}>Booking Successful! Redirecting...</Text>}
 
         {/* Time Slot Modal */}
         <Modal visible={timeModalVisible} animationType="slide" transparent>
@@ -188,12 +191,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  successMessage: {
-    color: 'green',
-    fontSize: 16,
-    marginTop: 20,
-    textAlign: 'center',
   },
   modalContainer: {
     flex: 1,

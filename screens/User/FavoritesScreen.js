@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Alert, ImageBackground } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Alert, ImageBackground, SafeAreaView } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { db, auth } from './firebaseConfig';
-import { colors } from './colors';
+import { db, auth } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 
 const FavoritesScreen = () => {
   const [favorites, setFavorites] = useState([]);
@@ -93,16 +93,19 @@ const FavoritesScreen = () => {
 
   if (favorites.length === 0) {
     return (
-      <ImageBackground source={require('./assets/background.jpg')} style={styles.background} resizeMode="cover">
+      <SafeAreaView style={{ flex: 1 }}>
+      <ImageBackground source={require('../../assets/background.jpg')} style={styles.background} resizeMode="cover">
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>No favorites yet!</Text>
         </View>
       </ImageBackground>
+      </SafeAreaView>
     );
   }
 
   return (
-    <ImageBackground source={require('./assets/background.jpg')} style={styles.background} resizeMode="cover">
+    <SafeAreaView style={{ flex: 1 }}>
+    <ImageBackground source={require('../../assets/background.jpg')} style={styles.background} resizeMode="cover">
       <View style={styles.overlay}>
         <FlatList
           data={favorites}
@@ -126,6 +129,7 @@ const FavoritesScreen = () => {
         </TouchableOpacity>
       </View>
     </ImageBackground>
+    </SafeAreaView>
   );
 };
 

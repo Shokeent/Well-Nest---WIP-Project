@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
-import { db } from './firebaseConfig';
-import { colors } from './colors';
+import { db } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 
 const TherapistListScreen = () => {
   const [therapists, setTherapists] = useState([]);
@@ -37,8 +37,9 @@ const TherapistListScreen = () => {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <ImageBackground
-      source={require('./assets/background.jpg')}
+      source={require('../../assets/background.jpg')}
       style={styles.background}
       resizeMode="cover"
     >
@@ -66,6 +67,7 @@ const TherapistListScreen = () => {
         />
       </View>
     </ImageBackground>
+    </SafeAreaView>
   );
 };
 

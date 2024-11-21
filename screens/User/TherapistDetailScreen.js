@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, Share } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, Share, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { db, auth } from './firebaseConfig';
-import { colors } from './colors';
+import { db, auth } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 
 const TherapistDetailScreen = ({ route, navigation }) => {
   const { therapistId } = route.params;
@@ -82,8 +82,9 @@ const TherapistDetailScreen = ({ route, navigation }) => {
   }
 
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <ImageBackground
-      source={require('./assets/background.jpg')}
+      source={require('../../assets/background.jpg')}
       style={styles.background}
       resizeMode="cover"
     >
@@ -124,6 +125,7 @@ const TherapistDetailScreen = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
     </ImageBackground>
+    </SafeAreaView>
   );
 };
 

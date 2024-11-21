@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, ImageBackground, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, ImageBackground, Alert, SafeAreaView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { db, auth } from './firebaseConfig';
-import { colors } from './colors';
+import { db, auth } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 
 const BookingScreen = ({ route, navigation }) => {
   const { therapistId, therapistName } = route.params;
@@ -34,31 +34,53 @@ const BookingScreen = ({ route, navigation }) => {
       Alert.alert('Missing Information', 'Please select a date and time slot.');
       return;
     }
-
+  
     try {
       const user = auth.currentUser;
       if (!user) {
         Alert.alert('Authentication Error', 'Please log in to book an appointment.');
         return;
-
       }
 
+      // Fetch user data from Firestore
+    const userDoc = await db.collection('users').doc(user.uid).get();
+    let userName = 'Anonymous User';
+    if (userDoc.exists && userDoc.data().name) {
+      userName = userDoc.data().name; // Use the name from Firestore
+    }
+  
+      // Prepare appointment data
       const appointmentData = {
-        therapistId,
+        therapistId, // Therapist reference
         therapistName,
+        userId: user.uid, // User reference
+        userName,  // User's display name
         date: selectedDate,
         time: selectedTime,
         sessionType,
         status: 'Pending',
         createdAt: new Date(),
       };
-
+  
+      // Create a unique document ID
+      const appointmentId = db.collection('appointments').doc().id;
+  
+      // Write to user's appointments subcollection
       await db
         .collection('users')
         .doc(user.uid)
         .collection('appointments')
-        .add(appointmentData);
-
+        .doc(appointmentId)
+        .set(appointmentData);
+  
+      // Write to therapist's appointments subcollection
+      await db
+        .collection('therapists')
+        .doc(therapistId)
+        .collection('appointments')
+        .doc(appointmentId)
+        .set(appointmentData);
+  
       Alert.alert(
         'Appointment Confirmed',
         `Your appointment with ${therapistName} on ${selectedDate} at ${selectedTime} is confirmed.`,
@@ -70,18 +92,21 @@ const BookingScreen = ({ route, navigation }) => {
         ]
       );
     } catch (error) {
-      console.error('Error booking appointment: ', error);
+      console.error('Error booking appointment:', error);
       Alert.alert('Error', 'Failed to book appointment. Please try again.');
     }
   };
-
+  
+  
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <ImageBackground
-      source={require('./assets/background.jpg')}
+      source={require('../../assets/background.jpg')}
       style={styles.background}
       resizeMode="cover"
     >
       <ScrollView contentContainerStyle={styles.container}>
+      
         <Text style={styles.heading}>Book an Appointment with        {therapistName}</Text>
 
         {/* Calendar for selecting date */}
@@ -130,6 +155,7 @@ const BookingScreen = ({ route, navigation }) => {
         </Modal>
       </ScrollView>
     </ImageBackground>
+    </SafeAreaView>
   );
 };
 

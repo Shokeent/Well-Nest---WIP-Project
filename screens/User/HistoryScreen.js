@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ImageBackground } from 'react-native';
-import { db, auth } from './firebaseConfig';
-import { colors } from './colors';
+import { View, Text, FlatList, StyleSheet, ImageBackground, SafeAreaView } from 'react-native';
+import { db, auth } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 
 const HistoryScreen = () => {
   const [appointments, setAppointments] = useState([]);
@@ -46,8 +46,9 @@ const HistoryScreen = () => {
 
   if (appointments.length === 0) {
     return (
+      <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground
-        source={require('./assets/background.jpg')}
+        source={require('../../assets/background.jpg')}
         style={styles.background}
         resizeMode="cover"
       >
@@ -55,12 +56,14 @@ const HistoryScreen = () => {
           <Text style={styles.emptyText}>No past appointments found.</Text>
         </View>
       </ImageBackground>
+      </SafeAreaView>
     );
   }
 
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <ImageBackground
-      source={require('./assets/background.jpg')}
+      source={require('../../assets/background.jpg')}
       style={styles.background}
       resizeMode="cover"
     >
@@ -74,6 +77,7 @@ const HistoryScreen = () => {
         />
       </View>
     </ImageBackground>
+    </SafeAreaView>
   );
 };
 

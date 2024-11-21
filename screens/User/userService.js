@@ -1,4 +1,4 @@
-import { db, auth } from './firebaseConfig';
+import { db, auth } from '../../utils/firebaseConfig';
 
 const addUserProfile = (userId, userData) => {
   return db.collection("users").doc(userId).set({

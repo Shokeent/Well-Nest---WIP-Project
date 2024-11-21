@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert } from 'react-native';
-import { auth } from './firebaseConfig'; 
-import { colors } from './colors';
-
+import { auth } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 const AuthScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +33,7 @@ const AuthScreen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require('./assets/background.jpg')} 
+      source={require('../../assets/background.jpg')} 
       style={styles.background}
       resizeMode="cover"
     >

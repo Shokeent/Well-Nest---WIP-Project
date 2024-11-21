@@ -11,24 +11,24 @@ const AuthScreen = ({ navigation }) => {
   const handleSignIn = async () => {
     try {
       await auth.signInWithEmailAndPassword(email, password);
-      navigation.navigate('AppTabs'); // Navigate to the main app tabs after successful sign-in
+      navigation.navigate('AppTabs'); 
     } catch (error) {
-      let customErrorMessage = "";
+      let customErrorMessage = '';
       switch (error.code) {
-        case "auth/user-not-found":
-          customErrorMessage = "No account found with this email. Please sign up.";
+        case 'auth/user-not-found':
+          customErrorMessage = 'No account found with this email. Please sign up.';
           break;
-        case "auth/wrong-password":
-          customErrorMessage = "Incorrect password. Please try again.";
+        case 'auth/wrong-password':
+          customErrorMessage = 'Incorrect password. Please try again.';
           break;
-        case "auth/invalid-email":
-          customErrorMessage = "Please enter a valid email address.";
+        case 'auth/invalid-email':
+          customErrorMessage = 'Please enter a valid email address.';
           break;
         default:
-          customErrorMessage = "An unexpected error occurred. Please try again.";
+          customErrorMessage = 'An unexpected error occurred. Please try again.';
       }
       setErrorMessage(customErrorMessage);
-      Alert.alert("Authentication Error", customErrorMessage);
+      Alert.alert('Authentication Error', customErrorMessage);
     }
   };
 
@@ -70,6 +70,14 @@ const AuthScreen = ({ navigation }) => {
             Don't have an account? Sign Up
           </Text>
         </View>
+
+        {/* Therapist Login Button */}
+        <TouchableOpacity
+          style={styles.therapistButton}
+          onPress={() => navigation.navigate('AdminLogin')}
+        >
+          <Text style={styles.therapistButtonText}>Login as a Therapist</Text>
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -149,6 +157,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginTop: 10,
+  },
+  therapistButton: {
+    width: '100%',
+    backgroundColor: '#81C784',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginTop: 30,
+  },
+  therapistButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

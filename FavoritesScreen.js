@@ -1,4 +1,3 @@
-// FavoritesScreen.js
 import React, { useCallback, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Alert, ImageBackground } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -32,7 +31,7 @@ const FavoritesScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchFavorites(); // Fetch favorites when screen is focused
+      fetchFavorites(); 
     }, [])
   );
 
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     padding: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)', // Semi-transparent overlay
+    backgroundColor: 'rgba(255, 255, 255, 0.85)', 
     borderRadius: 10,
   },
   card: {

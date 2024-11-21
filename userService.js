@@ -1,4 +1,3 @@
-// userService.js
 import { db, auth } from './firebaseConfig';
 
 const addUserProfile = (userId, userData) => {

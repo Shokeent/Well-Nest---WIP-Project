@@ -6,7 +6,7 @@ import { colors } from './colors';
 
 const UserProfileScreen = ({ navigation }) => {
   const [userData, setUserData] = useState({});
-  const [localImageUri, setLocalImageUri] = useState(null); // For storing the selected image URI
+  const [localImageUri, setLocalImageUri] = useState(null); 
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -14,7 +14,7 @@ const UserProfileScreen = ({ navigation }) => {
       if (userId) {
         const userDoc = await db.collection('users').doc(userId).get();
         setUserData(userDoc.data());
-        setLocalImageUri(userDoc.data()?.profileImage); // Load image URI from Firestore
+        setLocalImageUri(userDoc.data()?.profileImage); 
       }
     };
     fetchUserData();
@@ -36,8 +36,8 @@ const UserProfileScreen = ({ navigation }) => {
     });
   
     if (!result.cancelled && result.uri) {
-      setLocalImageUri(result.uri); // Update the local image URI immediately
-      saveImageUri(result.uri); // Save it to Firestore if URI is valid
+      setLocalImageUri(result.uri); 
+      saveImageUri(result.uri); 
     } else {
       console.log("Image selection was canceled or failed.");
     }
@@ -52,7 +52,7 @@ const UserProfileScreen = ({ navigation }) => {
   
       const userId = auth.currentUser.uid;
       await db.collection('users').doc(userId).update({
-        profileImage: uri, // Store the URI in Firestore
+        profileImage: uri, 
       });
       console.log('Image URI saved to Firestore successfully.');
     } catch (error) {
@@ -74,15 +74,6 @@ const UserProfileScreen = ({ navigation }) => {
       resizeMode="cover"
     >
       <View style={styles.overlay}>
-        <TouchableOpacity onPress={pickImage}>
-          {localImageUri ? (
-            <Image source={{ uri: localImageUri }} style={styles.profilePicture} />
-          ) : (
-            <View style={styles.profilePicturePlaceholder}>
-              <Text style={styles.addPhotoText}>Add Photo</Text>
-            </View>
-          )}
-        </TouchableOpacity>
         
         <Text style={styles.name}>{userData.name || "User Name"}</Text>
         <Text style={styles.phone}>{userData.phone || "(123) 456-7890"}</Text>
@@ -111,23 +102,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
   },
-  profilePicture: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  profilePicturePlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#D0F0C0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addPhotoText: {
-    color: '#888',
-    fontSize: 16,
-  },
+
   name: {
     fontSize: 24,
     fontWeight: 'bold',

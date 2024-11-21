@@ -15,7 +15,6 @@ const TherapistDetailScreen = ({ route, navigation }) => {
         if (doc.exists) {
           const data = doc.data();
           
-          // Extract latitude and longitude if location exists
           const location = data.location;
           const formattedLocation = location
             ? { latitude: location._lat, longitude: location._long }
@@ -46,7 +45,7 @@ const TherapistDetailScreen = ({ route, navigation }) => {
             name: therapist.name,
             specialization: therapist.specialization,
             rating: therapist.rating,
-            location: therapist.location, // Store location if needed
+            location: therapist.location, 
             photoUrl: therapist.photoUrl || '',
           });
         Alert.alert('Added to Favorites', `${therapist.name} has been added to your favorites.`);
@@ -89,7 +88,6 @@ const TherapistDetailScreen = ({ route, navigation }) => {
       resizeMode="cover"
     >
       <View style={styles.overlay}>
-        <Text style={styles.title}>Therapist Profile</Text>
         <Text style={styles.name}>{therapist.name}</Text>
         <Text style={styles.rating}>
           Rating: {therapist.rating} <Ionicons name="star" size={16} color="#FFD700" />

@@ -1,4 +1,3 @@
-// BookingScreen.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, ImageBackground, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
@@ -41,6 +40,7 @@ const BookingScreen = ({ route, navigation }) => {
       if (!user) {
         Alert.alert('Authentication Error', 'Please log in to book an appointment.');
         return;
+
       }
 
       const appointmentData = {
@@ -59,7 +59,6 @@ const BookingScreen = ({ route, navigation }) => {
         .collection('appointments')
         .add(appointmentData);
 
-      // Show confirmation alert with appointment details
       Alert.alert(
         'Appointment Confirmed',
         `Your appointment with ${therapistName} on ${selectedDate} at ${selectedTime} is confirmed.`,
@@ -83,7 +82,7 @@ const BookingScreen = ({ route, navigation }) => {
       resizeMode="cover"
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.heading}>Book an Appointment with {therapistName}</Text>
+        <Text style={styles.heading}>Book an Appointment with        {therapistName}</Text>
 
         {/* Calendar for selecting date */}
         <Text style={styles.label}>Select a Date:</Text>
@@ -106,25 +105,27 @@ const BookingScreen = ({ route, navigation }) => {
         </TouchableOpacity>
 
         {/* Time Slot Modal */}
-        <Modal visible={timeModalVisible} animationType="slide" transparent>
+        <Modal visible={timeModalVisible} animationType="fade" transparent>
           <View style={styles.modalContainer}>
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              {timeSlots.map((slot, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.modalItem}
-                  onPress={() => {
-                    setSelectedTime(slot);
-                    setTimeModalVisible(false);
-                  }}
-                >
-                  <Text style={styles.modalText}>{slot}</Text>
+            <View style={styles.modalContent}>
+              <ScrollView contentContainerStyle={styles.modalScroll}>
+                {timeSlots.map((slot, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.modalItem}
+                    onPress={() => {
+                      setSelectedTime(slot);
+                      setTimeModalVisible(false);
+                    }}
+                  >
+                    <Text style={styles.modalText}>{slot}</Text>
+                  </TouchableOpacity>
+                ))}
+                <TouchableOpacity style={styles.modalClose} onPress={() => setTimeModalVisible(false)}>
+                  <Text style={styles.modalCloseText}>Close</Text>
                 </TouchableOpacity>
-              ))}
-              <TouchableOpacity style={styles.modalClose} onPress={() => setTimeModalVisible(false)}>
-                <Text style={styles.modalCloseText}>Close</Text>
-              </TouchableOpacity>
-            </ScrollView>
+              </ScrollView>
+            </View>
           </View>
         </Modal>
       </ScrollView>
@@ -195,13 +196,17 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center', // Center horizontally
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: '#fff',
     padding: 20,
-    marginHorizontal: 40,
+    width: '80%',
     borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalScroll: {
     alignItems: 'center',
   },
   modalItem: {

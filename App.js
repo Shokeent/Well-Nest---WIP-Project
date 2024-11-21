@@ -15,15 +15,25 @@ import UserProfileScreen from './UserProfileScreen';
 import MapScreen from './MapScreen';
 import FavoritesScreen from './FavoritesScreen';
 import HistoryScreen from './HistoryScreen';
+import AdminLoginScreen from './AdminLoginScreen';
+import CreateTherapistScreen from './CreateTherapistScreen'; 
 import { auth, db } from './firebaseConfig';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="Therapists" component={TherapistListScreen} />
-    <Stack.Screen name="TherapistDetail" component={TherapistDetailScreen} />
+  <Stack.Navigator screenOptions={{ headerBackTitleVisible: false }}>
+    <Stack.Screen 
+      name="Therapists" 
+      component={TherapistListScreen} 
+      options={{ title: 'Therapists' }} 
+    />
+    <Stack.Screen 
+      name="TherapistDetail" 
+      component={TherapistDetailScreen} 
+      options={{ title: 'Therapist Details' }} 
+    />
     <Stack.Screen name="Booking" component={BookingScreen} />
     <Stack.Screen name="Map" component={MapScreen} />
   </Stack.Navigator>
@@ -53,52 +63,57 @@ const AppTabs = () => (
 );
 
 const App = () => {
-  const registerForPushNotificationsAsync = async () => {
-    let token;
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        Alert.alert('Permission denied', 'Failed to get push token for push notifications!');
-        return;
+  useEffect(() => {
+    const registerForPushNotificationsAsync = async () => {
+      let token;
+      if (Constants.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+          Alert.alert('Permission denied', 'Failed to get push token for push notifications!');
+          return;
+        }
+
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+        console.log('Push token:', token);
+
+        const user = auth.currentUser;
+        if (user) {
+          await db.collection('users').doc(user.uid).update({
+            pushToken: token,
+          });
+        }
       }
 
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log('Push token:', token);
-
-      const user = auth.currentUser;
-      if (user) {
-        await db.collection('users').doc(user.uid).update({
-          pushToken: token,
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
         });
       }
-    } else {
-      // Alert.alert('Push Notifications', 'Must use a physical device for Push Notifications');
-    }
+    };
 
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-  };
-
-  useEffect(() => {
     registerForPushNotificationsAsync();
   }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Auth" screenOptions={{ headerShown: false }}>
+        {/* User and Therapist Authentication */}
         <Stack.Screen name="Auth" component={AuthScreen} />
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
+        
+        {/* Therapist Admin Flow */}
+        <Stack.Screen name="AdminLogin" component={AdminLoginScreen} />
+        <Stack.Screen name="CreateTherapist" component={CreateTherapistScreen} />
+
+        {/* User App Flow */}
         <Stack.Screen name="AppTabs" component={AppTabs} />
       </Stack.Navigator>
     </NavigationContainer>

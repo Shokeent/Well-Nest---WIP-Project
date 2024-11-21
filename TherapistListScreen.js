@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
-import { db, auth } from './firebaseConfig';
+import { db } from './firebaseConfig';
 import { colors } from './colors';
 
 const TherapistListScreen = () => {
   const [therapists, setTherapists] = useState([]);
   const [searchTerm, setSearchTerm] = useState(''); 
   const [filteredTherapists, setFilteredTherapists] = useState([]); 
-  const navigation = useNavigation(); 
+
+  const navigation = useNavigation(); // Navigation is used for internal navigation within the app only
 
   useEffect(() => {
     const unsubscribe = db.collection('therapists').onSnapshot((snapshot) => {
@@ -109,7 +110,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#81C784',
     marginTop: 8,
-    
   },
 });
 

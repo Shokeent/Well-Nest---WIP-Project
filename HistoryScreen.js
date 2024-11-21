@@ -1,4 +1,3 @@
-// HistoryScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ImageBackground } from 'react-native';
 import { db, auth } from './firebaseConfig';
@@ -13,7 +12,7 @@ const HistoryScreen = () => {
       if (!user) return;
 
       try {
-        // Fetch appointments from the user's 'appointments' subcollection
+ 
         const appointmentsSnapshot = await db
           .collection('users')
           .doc(user.uid)
@@ -37,7 +36,7 @@ const HistoryScreen = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.appointmentCard}>
-      <Text style={styles.therapistName}>Dr. {item.therapistName}</Text>
+      <Text style={styles.therapistName}>{item.therapistName}</Text>
       <Text style={styles.appointmentDetail}>Date: {item.date}</Text>
       <Text style={styles.appointmentDetail}>Time: {item.time}</Text>
       <Text style={styles.appointmentDetail}>Session Type: {item.sessionType}</Text>

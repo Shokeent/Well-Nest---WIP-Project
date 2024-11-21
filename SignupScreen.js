@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
-import { auth, db } from './firebaseConfig'; // Ensure this points to your Firebase config file
+import { auth, db } from './firebaseConfig'; 
 import { colors } from './colors';
 
 const SignupScreen = ({ navigation }) => {
@@ -18,11 +18,11 @@ const SignupScreen = ({ navigation }) => {
     }
 
     try {
-      // Create a new user in Firebase Authentication
+
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
 
-      // Create a user profile document in Firestore
+
       await db.collection('users').doc(user.uid).set({
         name: name,
         email: email,
@@ -31,7 +31,7 @@ const SignupScreen = ({ navigation }) => {
       });
 
       Alert.alert("Success", "Your account has been created!");
-      navigation.navigate('Auth'); // Redirect to login screen
+      navigation.navigate('Auth'); 
 
     } catch (error) {
       console.error("Error signing up: ", error);
@@ -78,7 +78,7 @@ const SignupScreen = ({ navigation }) => {
         secureTextEntry
       />
       {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
-      <Button title="Sign Up" onPress={handleSignUp} color={colors.primary} />
+      <Button title="Create An Account" onPress={handleSignUp} color={colors.primary} />
       <Text style={styles.link} onPress={() => navigation.navigate('Auth')}>
         Already have an account? Sign In
       </Text>
@@ -96,7 +96,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 24,
+    padding: 25,
+    marginBottom: 20,
     textAlign: 'center',
   },
   input: {

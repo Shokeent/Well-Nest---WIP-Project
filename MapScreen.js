@@ -1,4 +1,3 @@
-// MapScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';

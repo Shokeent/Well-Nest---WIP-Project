@@ -30,7 +30,7 @@ const TherapistTabs = () => (
     <Tab.Screen
       name="Dashboard"
       component={TherapistDashboardScreen}
-      options={{ headerShown: false }}
+      options={{ headerShown: true }}
     />
     <Tab.Screen
       name="Appointments"

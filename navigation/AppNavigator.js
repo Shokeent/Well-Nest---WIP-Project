@@ -84,7 +84,7 @@ const AppNavigator = () => (
         name="TherapistStack"
         component={TherapistStack}
         options={{
-          headerShown: false,
+          headerShown: true,
         }}
       />
 
@@ -119,7 +119,7 @@ const AppNavigator = () => (
           headerTitleStyle: { fontWeight: 'bold', fontSize: 18 },
         }}
       />
-      
+
       <Stack.Screen
   name="AppointmentsScreen"
   component={AppointmentsScreen}

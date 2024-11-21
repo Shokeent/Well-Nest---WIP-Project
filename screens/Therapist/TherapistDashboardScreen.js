@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ImageBackground, Alert, SafeAreaView } from 'react-native';
 import { auth, db } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 
 const TherapistDashboardScreen = ({ navigation }) => {
   const [therapistData, setTherapistData] = useState(null);
@@ -58,15 +59,6 @@ const TherapistDashboardScreen = ({ navigation }) => {
     fetchAppointments();
   }, [navigation]);
 
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigation.navigate('AdminLogin');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-
   const handleNavigateToAppointmentScreen = (appointment) => {
     navigation.navigate('AppointmentsScreen', { appointment });
   };
@@ -81,12 +73,6 @@ const TherapistDashboardScreen = ({ navigation }) => {
         </View>
       )}
 
-      <TouchableOpacity
-        style={styles.manageSlotsButton}
-        onPress={() => navigation.navigate('TimeSlotManagement')}
-      >
-        <Text style={styles.manageSlotsButtonText}>Manage Time Slots</Text>
-      </TouchableOpacity>
 
       <Text style={styles.sectionTitle}>Upcoming Appointments</Text>
     </>
@@ -106,28 +92,42 @@ const TherapistDashboardScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <FlatList
-        data={appointments}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={renderHeader}
-        renderItem={renderAppointment}
-        ListEmptyComponent={<Text style={styles.noAppointments}>No upcoming appointments.</Text>}
-        contentContainerStyle={styles.container}
-      />
+      <ImageBackground
+        source={require('../../assets/background.jpg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <FlatList
+            data={appointments}
+            keyExtractor={(item) => item.id}
+            ListHeaderComponent={renderHeader}
+            renderItem={renderAppointment}
+            ListEmptyComponent={<Text style={styles.noAppointments}>No upcoming appointments.</Text>}
+            contentContainerStyle={styles.container}
+          />
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     padding: 20,
-    backgroundColor: '#fff',
-    flexGrow: 1,
+  },
+  container: {
+    paddingBottom: 20,
   },
   profile: {
     marginBottom: 20,
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.accent,
     borderRadius: 10,
     elevation: 2,
   },
@@ -135,55 +135,45 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#4CAF50',
+    color: colors.primary,
   },
   info: {
     fontSize: 16,
-    color: '#555',
+    color: colors.text,
     marginBottom: 5,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: colors.primary,
     marginBottom: 10,
   },
   card: {
     padding: 15,
     marginBottom: 10,
-    backgroundColor: '#e8f5e9',
+    backgroundColor: colors.accent,
     borderRadius: 8,
     elevation: 1,
   },
   cardText: {
     fontSize: 16,
+    color: colors.text,
     marginBottom: 5,
   },
   noAppointments: {
     fontSize: 16,
-    color: '#888',
+    color: colors.text,
     textAlign: 'center',
     marginTop: 20,
   },
   manageSlotsButton: {
-    backgroundColor: '#81C784',
+    backgroundColor: colors.secondary,
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 20,
   },
   manageSlotsButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  logoutButton: {
-    marginTop: 10,
-    padding: 15,
-    backgroundColor: '#F44336',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  logoutButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',

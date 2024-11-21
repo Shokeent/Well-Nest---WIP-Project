@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, Alert, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, Alert, ImageBackground, SafeAreaView } from 'react-native';
 import { auth, db } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 
 const TimeSlotManagementScreen = ({ navigation }) => {
   const [timeSlots, setTimeSlots] = useState([]);
@@ -69,54 +70,70 @@ const TimeSlotManagementScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-    <FlatList
-      data={timeSlots}
-      keyExtractor={(item, index) => index.toString()}
-      ListHeaderComponent={
-        <View>
-          <Text style={styles.title}>Manage Time Slots</Text>
-          <View style={styles.inputRow}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter time slot (e.g., 10:00 AM - 11:00 AM)"
-              value={newTimeSlot}
-              onChangeText={setNewTimeSlot}
-            />
-            <TouchableOpacity style={styles.addButton} onPress={addTimeSlot}>
-              <Text style={styles.addButtonText}>Add</Text>
-            </TouchableOpacity>
-          </View>
+      <ImageBackground
+        source={require('../../assets/background.jpg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <FlatList
+            data={timeSlots}
+            keyExtractor={(item, index) => index.toString()}
+            ListHeaderComponent={
+              <View>
+                <Text style={styles.title}>Manage Time Slots</Text>
+                <View style={styles.inputRow}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter time slot (e.g., 10:00 AM - 11:00 AM)"
+                    placeholderTextColor={colors.accent}
+                    value={newTimeSlot}
+                    onChangeText={setNewTimeSlot}
+                  />
+                  <TouchableOpacity style={styles.addButton} onPress={addTimeSlot}>
+                    <Text style={styles.addButtonText}>Add</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            }
+            renderItem={({ item }) => (
+              <View style={styles.timeSlotRow}>
+                <Text style={styles.timeSlotText}>{item}</Text>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => deleteTimeSlot(item)}
+                >
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            ListEmptyComponent={<Text style={styles.emptyMessage}>No time slots added yet.</Text>}
+            contentContainerStyle={styles.container}
+          />
         </View>
-      }
-      renderItem={({ item }) => (
-        <View style={styles.timeSlotRow}>
-          <Text style={styles.timeSlotText}>{item}</Text>
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => deleteTimeSlot(item)}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      ListEmptyComponent={<Text style={styles.emptyMessage}>No time slots added yet.</Text>}
-      contentContainerStyle={styles.container}
-    />
+      </ImageBackground>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     padding: 20,
-    backgroundColor: '#fff',
+  },
+  container: {
+    paddingBottom: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#4CAF50',
+    color: colors.primary,
   },
   inputRow: {
     flexDirection: 'row',
@@ -125,15 +142,16 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 50,
-    borderColor: '#ccc',
+    borderColor: colors.accent,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
     marginRight: 10,
+    color: colors.text,
   },
   addButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.primary,
     paddingHorizontal: 20,
     borderRadius: 8,
     justifyContent: 'center',
@@ -154,10 +172,10 @@ const styles = StyleSheet.create({
   },
   timeSlotText: {
     fontSize: 16,
-    color: '#555',
+    color: colors.text,
   },
   deleteButton: {
-    backgroundColor: '#e57373',
+    backgroundColor: colors.error,
     paddingHorizontal: 15,
     borderRadius: 8,
     justifyContent: 'center',
@@ -170,7 +188,7 @@ const styles = StyleSheet.create({
   },
   emptyMessage: {
     fontSize: 16,
-    color: '#888',
+    color: colors.text,
     textAlign: 'center',
     marginTop: 20,
   },

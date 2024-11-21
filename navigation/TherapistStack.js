@@ -7,7 +7,7 @@ import TimeSlotManagementScreen from '../screens/Therapist/TimeSlotManagementScr
 import AppointmentsScreen from '../screens/Therapist/AppointmentsScreen';
 import SettingsScreen from '../screens/Therapist/SettingsScreen';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator(); 
 
 const TherapistStack = () => (
   <Stack.Navigator>
@@ -16,10 +16,17 @@ const TherapistStack = () => (
       name="TherapistDashboard"
       component={TherapistDashboardScreen}
       options={{
-        title: 'Dashboard',
-        headerStyle: { backgroundColor: '#4CAF50' },
+        title: 'Therapists',
+        headerStyle: {
+          backgroundColor: '#4CAF50',
+        },
         headerTintColor: '#fff',
-        headerTitleStyle: { fontWeight: 'bold', fontSize: 18 },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 20,
+        },
+        headerTitleAlign: 'center', 
+        headerShown: true,
       }}
     />
 

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ImageBackground, SafeAreaView, Alert } from 'react-native';
 import { auth, db } from '../../utils/firebaseConfig';
-import { parse, isAfter, format } from 'date-fns'; // For date parsing and formatting
+import { parse, isAfter, format } from 'date-fns';
+import { colors } from '../../utils/colors';
 
 const AppointmentsScreen = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -16,7 +17,6 @@ const AppointmentsScreen = () => {
           return;
         }
 
-        // Fetch appointments from the therapist's subcollection
         const snapshot = await db
           .collection('therapists')
           .doc(therapist.uid)
@@ -29,11 +29,8 @@ const AppointmentsScreen = () => {
 
         snapshot.docs.forEach((doc) => {
           const data = doc.data();
-
-          // Parse the appointment date and time
           const appointmentDate = parse(`${data.date} ${data.time}`, 'yyyy-MM-dd hh:mm a', new Date());
 
-          // Categorize appointments based on the current date and time
           if (isAfter(appointmentDate, now)) {
             upcoming.push({ id: doc.id, ...data });
           } else {
@@ -41,7 +38,6 @@ const AppointmentsScreen = () => {
           }
         });
 
-        // Sort appointments
         upcoming.sort((a, b) => parse(`${a.date} ${a.time}`, 'yyyy-MM-dd hh:mm a', new Date()) -
           parse(`${b.date} ${b.time}`, 'yyyy-MM-dd hh:mm a', new Date()));
         past.sort((a, b) => parse(`${b.date} ${b.time}`, 'yyyy-MM-dd hh:mm a', new Date()) -
@@ -60,10 +56,9 @@ const AppointmentsScreen = () => {
 
   const handleAction = async (appointmentId, action, userId) => {
     try {
-      const therapistId = auth.currentUser.uid;
+      const therapistId = auth.currentUser?.uid;
       const newStatus = action === 'approve' ? 'Approved' : 'Cancelled';
 
-      // References to therapist's and user's appointments
       const therapistAppointmentRef = db
         .collection('therapists')
         .doc(therapistId)
@@ -76,13 +71,11 @@ const AppointmentsScreen = () => {
         .collection('appointments')
         .doc(appointmentId);
 
-      // Update status in both therapist and user appointments
       await therapistAppointmentRef.update({ status: newStatus });
       await userAppointmentRef.update({ status: newStatus });
 
       Alert.alert('Success', `Appointment ${newStatus.toLowerCase()} successfully!`);
 
-      // Refresh appointments
       const snapshot = await db
         .collection('therapists')
         .doc(therapistId)
@@ -104,7 +97,6 @@ const AppointmentsScreen = () => {
         }
       });
 
-      // Update the UI
       setUpcomingAppointments(upcoming);
       setPastAppointments(past);
     } catch (error) {
@@ -139,55 +131,66 @@ const AppointmentsScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.sectionTitle}>Upcoming Appointments</Text>
-      <FlatList
-        data={upcomingAppointments}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => renderAppointment(item, true)}
-        ListEmptyComponent={<Text style={styles.noAppointments}>No upcoming appointments.</Text>}
-      />
+    <SafeAreaView style={{ flex: 1 }}>
+      <ImageBackground
+        source={require('../../assets/background.jpg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <Text style={styles.sectionTitle}>Upcoming Appointments</Text>
+          <FlatList
+            data={upcomingAppointments}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => renderAppointment(item, true)}
+            ListEmptyComponent={<Text style={styles.noAppointments}>No upcoming appointments.</Text>}
+          />
 
-      <Text style={styles.sectionTitle}>Past Appointments</Text>
-      <FlatList
-        data={pastAppointments}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => renderAppointment(item, false)}
-        ListEmptyComponent={<Text style={styles.noAppointments}>No past appointments.</Text>}
-      />
+          <Text style={styles.sectionTitle}>Past Appointments</Text>
+          <FlatList
+            data={pastAppointments}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => renderAppointment(item, false)}
+            ListEmptyComponent={<Text style={styles.noAppointments}>No past appointments.</Text>}
+          />
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    padding: 16,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: colors.primary,
     marginBottom: 10,
-    marginTop: 20,
   },
   card: {
     padding: 15,
     marginBottom: 10,
-    backgroundColor: '#e8f5e9',
-    borderRadius: 8,
-    elevation: 1,
+    backgroundColor: colors.accent,
+    borderRadius: 10,
+    elevation: 2,
   },
   cardText: {
     fontSize: 16,
+    color: colors.text,
     marginBottom: 5,
   },
   noAppointments: {
     fontSize: 16,
-    color: '#888',
+    color: colors.text,
     textAlign: 'center',
-    marginTop: 20,
+    marginVertical: 20,
   },
   actionContainer: {
     flexDirection: 'row',
@@ -202,10 +205,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   approveButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.primary,
   },
   cancelButton: {
-    backgroundColor: '#F44336',
+    backgroundColor: colors.error,
   },
   actionText: {
     color: '#fff',

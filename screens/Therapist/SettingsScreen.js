@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, Switch } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, Switch, SafeAreaView, ImageBackground } from 'react-native';
 import { auth, db } from '../../utils/firebaseConfig';
+import { colors } from '../../utils/colors';
 
 const SettingsScreen = ({ navigation }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -83,67 +84,82 @@ const SettingsScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Settings</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ImageBackground
+        source={require('../../assets/background.jpg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <Text style={styles.header}>Settings</Text>
 
-      {/* Bio and Rating */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Profile</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Add your bio"
-          value={bio}
-          onChangeText={setBio}
-          multiline
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Rating (e.g., 4.5)"
-          value={rating}
-          onChangeText={setRating}
-          keyboardType="numeric"
-        />
-        <TouchableOpacity style={styles.button} onPress={handleSaveBioAndRating}>
-          <Text style={styles.buttonText}>Save</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Bio and Rating */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Profile</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Add your bio"
+              placeholderTextColor={colors.secondary}
+              value={bio}
+              onChangeText={setBio}
+              multiline
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Rating (e.g., 4.5)"
+              placeholderTextColor={colors.secondary}
+              value={rating}
+              onChangeText={setRating}
+              keyboardType="numeric"
+            />
+            <TouchableOpacity style={styles.button} onPress={handleSaveBioAndRating}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Notifications */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Notifications</Text>
-        <View style={styles.switchRow}>
-          <Text style={styles.label}>Enable Notifications</Text>
-          <Switch
-            value={notificationsEnabled}
-            onValueChange={toggleNotifications}
-          />
+          {/* Notifications */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Notifications</Text>
+            <View style={styles.switchRow}>
+              <Text style={styles.label}>Enable Notifications</Text>
+              <Switch
+                value={notificationsEnabled}
+                onValueChange={toggleNotifications}
+                trackColor={{ true: colors.primary, false: colors.error }}
+                thumbColor={notificationsEnabled ? colors.accent : colors.error}
+              />
+            </View>
+          </View>
+
+          {/* Account Management */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Account</Text>
+            <TouchableOpacity style={styles.button} onPress={handleLogout}>
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+              <Text style={styles.deleteButtonText}>Delete Account</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-
-      {/* Account Management */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account</Text>
-        <TouchableOpacity style={styles.button} onPress={handleLogout}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-          <Text style={styles.deleteButtonText}>Delete Account</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ImageBackground>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     padding: 20,
-    backgroundColor: '#fff',
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: colors.primary,
     marginBottom: 20,
   },
   section: {
@@ -152,30 +168,31 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#388E3C',
+    color: colors.secondary,
     marginBottom: 10,
   },
   input: {
     width: '100%',
     height: 50,
-    borderColor: '#A5D6A7',
+    borderColor: colors.accent,
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 15,
     paddingHorizontal: 10,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
+    color: colors.text,
   },
   button: {
     padding: 15,
-    backgroundColor: '#81C784',
+    backgroundColor: colors.secondary,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 10,
   },
   deleteButton: {
     padding: 15,
-    backgroundColor: '#F44336',
+    backgroundColor: colors.error,
     borderRadius: 8,
     alignItems: 'center',
   },
@@ -197,7 +214,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: '#555',
+    color: colors.text,
   },
 });
 

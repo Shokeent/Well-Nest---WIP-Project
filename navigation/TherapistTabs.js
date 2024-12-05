@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-// Import screens
+// screens
 import TherapistDashboardScreen from '../screens/Therapist/TherapistDashboardScreen';
 import AppointmentsScreen from '../screens/Therapist/AppointmentsScreen';
 import TimeSlotManagementScreen from '../screens/Therapist/TimeSlotManagementScreen';

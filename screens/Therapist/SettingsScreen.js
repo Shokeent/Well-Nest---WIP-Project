@@ -32,7 +32,7 @@ const SettingsScreen = ({ navigation }) => {
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      navigation.navigate('AdminLogin'); // Navigate back to the login screen
+      navigation.navigate('AdminLogin'); 
     } catch (error) {
       console.error('Error logging out:', error);
       Alert.alert('Logout Error', error.message);
@@ -54,8 +54,8 @@ const SettingsScreen = ({ navigation }) => {
           onPress: async () => {
             try {
               const userId = auth.currentUser.uid;
-              await db.collection('therapists').doc(userId).delete(); // Remove therapist data from Firestore
-              await auth.currentUser.delete(); // Delete the user account
+              await db.collection('therapists').doc(userId).delete(); 
+              await auth.currentUser.delete(); 
               navigation.navigate('AdminLogin');
             } catch (error) {
               console.error('Error deleting account:', error);

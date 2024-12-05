@@ -42,30 +42,28 @@ const BookingScreen = ({ route, navigation }) => {
         return;
       }
 
-      // Fetch user data from Firestore
+     
     const userDoc = await db.collection('users').doc(user.uid).get();
     let userName = 'Anonymous User';
     if (userDoc.exists && userDoc.data().name) {
-      userName = userDoc.data().name; // Use the name from Firestore
+      userName = userDoc.data().name; 
     }
   
-      // Prepare appointment data
+      // appointment data
       const appointmentData = {
-        therapistId, // Therapist reference
+        therapistId,
         therapistName,
-        userId: user.uid, // User reference
-        userName,  // User's display name
+        userId: user.uid, 
+        userName, 
         date: selectedDate,
         time: selectedTime,
         sessionType,
         status: 'Pending',
         createdAt: new Date(),
       };
-  
-      // Create a unique document ID
       const appointmentId = db.collection('appointments').doc().id;
   
-      // Write to user's appointments subcollection
+      //  user's appointments subcollection
       await db
         .collection('users')
         .doc(user.uid)
@@ -73,7 +71,7 @@ const BookingScreen = ({ route, navigation }) => {
         .doc(appointmentId)
         .set(appointmentData);
   
-      // Write to therapist's appointments subcollection
+      //therapist's appointments subcollection
       await db
         .collection('therapists')
         .doc(therapistId)
@@ -109,7 +107,6 @@ const BookingScreen = ({ route, navigation }) => {
       
         <Text style={styles.heading}>Book an Appointment with        {therapistName}</Text>
 
-        {/* Calendar for selecting date */}
         <Text style={styles.label}>Select a Date:</Text>
         <Calendar
           onDayPress={(day) => setSelectedDate(day.dateString)}
@@ -119,17 +116,14 @@ const BookingScreen = ({ route, navigation }) => {
           style={styles.calendar}
         />
 
-        {/* Time slot picker */}
         <TouchableOpacity style={styles.selector} onPress={() => setTimeModalVisible(true)}>
           <Text style={styles.selectorText}>{selectedTime}</Text>
         </TouchableOpacity>
 
-        {/* Booking Button */}
         <TouchableOpacity style={styles.button} onPress={handleBooking}>
           <Text style={styles.buttonText}>Book Appointment</Text>
         </TouchableOpacity>
 
-        {/* Time Slot Modal */}
         <Modal visible={timeModalVisible} animationType="fade" transparent>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
@@ -222,7 +216,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', // Center horizontally
+    alignItems: 'center', 
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {

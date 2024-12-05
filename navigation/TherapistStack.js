@@ -1,7 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-
-// Import therapist-specific screens
+// therapist screens
 import TherapistDashboardScreen from '../screens/Therapist/TherapistDashboardScreen';
 import TimeSlotManagementScreen from '../screens/Therapist/TimeSlotManagementScreen';
 import AppointmentsScreen from '../screens/Therapist/AppointmentsScreen';

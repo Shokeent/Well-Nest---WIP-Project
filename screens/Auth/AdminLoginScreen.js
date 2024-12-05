@@ -11,10 +11,8 @@ const AdminLoginScreen = ({ navigation }) => {
       await auth.signInWithEmailAndPassword(email, password);
 
       navigation.navigate('TherapistTabs', {
-        screen: 'Dashboard', // Ensure this matches the name in TherapistTabs
+        screen: 'Dashboard', 
       });
-
-      // navigation.navigate('TherapistDashboard'); // Navigate to the therapist dashboard after login
     } catch (error) {
       console.error('Error logging in:', error);
       Alert.alert('Login Error', error.message);

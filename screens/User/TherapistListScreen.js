@@ -9,7 +9,7 @@ const TherapistListScreen = () => {
   const [searchTerm, setSearchTerm] = useState(''); 
   const [filteredTherapists, setFilteredTherapists] = useState([]); 
 
-  const navigation = useNavigation(); // Navigation is used for internal navigation within the app only
+  const navigation = useNavigation(); 
 
   useEffect(() => {
     const unsubscribe = db.collection('therapists').onSnapshot((snapshot) => {

@@ -15,11 +15,11 @@ const CreateTherapistScreen = ({ navigation }) => {
         name,
         email,
         specialization,
-        availability: [], // Default empty availability
+        availability: [], 
         createdAt: new Date(),
       });
       Alert.alert('Success', 'Therapist account created successfully!');
-      navigation.navigate('AdminLogin'); // Navigate to therapist login screen after sign-up
+      navigation.navigate('AdminLogin'); 
     } catch (error) {
       console.error('Error creating therapist account:', error);
       Alert.alert('Sign Up Error', error.message);
@@ -68,7 +68,6 @@ const CreateTherapistScreen = ({ navigation }) => {
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          {/* Navigate back to Therapist Login */}
           <TouchableOpacity
             style={styles.link}
             onPress={() => navigation.navigate('AdminLogin')}

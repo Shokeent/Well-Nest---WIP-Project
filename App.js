@@ -1,8 +1,8 @@
 import React from 'react';
-import AppNavigator from './navigation/AppNavigator'; // Import the main navigator
+import AppNavigator from './navigation/AppNavigator'; 
 
 const App = () => {
-  return <AppNavigator />; // Main entry point of the app
+  return <AppNavigator />; 
 };
 
 export default App;

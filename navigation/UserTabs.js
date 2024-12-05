@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-// Import navigators and screens
+//navigators and screens
 import HomeStack from './HomeStack';
 import FavoritesScreen from '../screens/User/FavoritesScreen';
 import UserProfileScreen from '../screens/User/UserProfileScreen';

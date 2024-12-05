@@ -16,14 +16,14 @@ const HomeStack = () => (
       name="TherapistList"
       component={TherapistListScreen}
       options={{
-        title: 'Therapists', // Title for the screen
+        title: 'Therapists', 
         headerStyle: {
-          backgroundColor: '#4CAF50', // Green header background
+          backgroundColor: '#4CAF50',
         },
-        headerTintColor: '#fff', // White header text
+        headerTintColor: '#fff', 
         headerTitleStyle: {
-          fontWeight: 'bold', // Bold title
-          fontSize: 18, // Font size for the header
+          fontWeight: 'bold',
+          fontSize: 18, 
         },
         headerLeft: () => null
       }}

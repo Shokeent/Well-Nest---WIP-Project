@@ -24,7 +24,7 @@ const SignUpScreen = ({ navigation }) => {
         createdAt: new Date(),
       });
       Alert.alert('Success', 'Account created successfully!');
-      navigation.navigate('AppTabs'); // Navigate to the app after successful sign-up
+      navigation.navigate('AppTabs'); 
     } catch (error) {
       console.error('Error signing up:', error);
       Alert.alert('Sign Up Error', error.message);
